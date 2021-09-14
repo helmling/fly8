@@ -770,7 +770,7 @@ screen_info (VIEW *view, int orgx, int orgy, int maxx, int maxy, int ss,
 		y += ss;
 		stroke_str (mg, y, line, ss, ST_IFG);
 
-		sprintf (line, "R%6ld%6ld%6ld",		/* position */
+		sprintf (line, "R%6d%6d%6d",		/* position */
 			vuscale (CV->R[X]),
 			vuscale (CV->R[Y]),
 			vuscale (CV->R[Z]));

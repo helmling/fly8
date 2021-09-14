@@ -201,7 +201,8 @@ struct e_plane {
 	xshort		ldstepg;	/* ladder step 00 (gear down) size */
 	xshort		ldtip;		/* ladder tip size */
 	xshort		ldndash;	/* ladder -ve step n-dashes */
-	long		fuel;		/* fuel left [*100] */
+	// long		fuel;		/* fuel left [*100] */
+	int32_t		fuel;		/* fuel left [*100] */
 	xshort		fuelRate;	/* [*100] */
 	xshort		throttle;	/* position [-100..100]*/
 	xshort		afterburner;	/* position [0..100] */
@@ -226,7 +227,7 @@ struct e_plane {
 	Uchar		NEAR*  NEAR* StFontPtr;	/* StFonts[StFont] */
 	xshort		StFontSize;
 	OBJECT		*target;	/* aqcuired target */
-	long		tid;		/* target id */
+	int32_t		tid;		/* target id */
 	F8PID		*PIDthrottle;
 	F8PID		*PIDpitch;
 	F8PID		*PIDroll;
@@ -256,7 +257,7 @@ struct e_parms {
 	struct e_parms	*next;
 	char	name[10];
 
-	long	weight;			/* empty weight [lb] */
+	int32_t	weight;			/* empty weight [lb] */
 	xshort	Ixx;			/* Ixx as I/Weight in kg-m2/kg */
 	xshort	Iyy;			/* Iyy */
 	xshort	Izz;			/* Izz */
@@ -270,7 +271,7 @@ struct e_parms {
 	xshort	eyez;			/* pilot eye above cg [vm] */
 	xshort	eyey;			/* pilot eye forwad of cg [vm] */
 	ANGLE	gpitch;			/* pitch on ground [ang] */
-	long	ceiling;		/* operational ceiling [ft] */
+	int32_t	ceiling;		/* operational ceiling [ft] */
 	xshort	stores[N_WE];		/* count */
 
 	xshort	brake_mu;		/* friction with brakes applied */
