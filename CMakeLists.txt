@@ -4,6 +4,8 @@ project(fly8 LANGUAGES C CXX)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
+set(CMAKE_INSTALL_PREFIX "/Users/helmling/fly8-sdl/")
+
 include(CheckFunctionExists)
 check_function_exists(stricmp HAS_STRICMP)
 check_function_exists(strnicmp HAS_STRNICMP)
@@ -33,7 +35,7 @@ set(WBMODE "wb")
 set(ATMODE "at")
 set(ABMODE "ab")
 
-set(C_MAIN SDL_main)
+# set(C_MAIN SDL_main)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     SET(FLY8_SYSTEM_TYPE MSWIN)
@@ -66,6 +68,22 @@ if (CMAKE_SYSTEM_NAME MATCHES "Windows")
         endif()
 
     endif ()
+endif ()
+
+if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    SET(FLY8_SYSTEM_TYPE UNIX)
+    set(PATHSEP ";")
+        if(NOT DEFINED CONAN_LINK_RUNTIME AND DEFINED CONAN_SETTINGS_COMPILER_RUNTIME)
+            message(WARNING "Forcing MSVC runtime based on conan profile")
+            # this means Conan is not running the build, so we need to fix our linker flags ourself.... although we can probably cheat...
+            set(CONAN_LINK_RUNTIME "/${CONAN_SETTINGS_COMPILER_RUNTIME}")
+            conan_set_vs_runtime()
+
+            # finally, warn us about the flags.
+            foreach(FLAG CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+                message(STATUS "Compiler Flags ${FLAG} is set to ${${FLAG}}")
+            endforeach()
+        endif()
 endif ()
 
 configure_file(config.h.in config.h)
@@ -222,7 +240,7 @@ endif()
 
 ### fly8 utilities.
 add_executable(mac2max utils/mac2max.c keydef.h keymap.h keyname.h)
-add_executable(max2mac utils/max2mac.c keydef.h keymap.h keyname.h)
+add_executable(max2mac utils/max2mac.c keydef.h keymap.h keyname.h need.c)
 install(TARGETS
         mac2max max2mac
         RUNTIME DESTINATION .)
@@ -272,7 +290,7 @@ install(FILES
         ${REDISTRIBUTABLE_AWK}
         ${REDISTRIBUTABLE_CPP}
         ${FILES_RAWDATA}
-        DESTINATION "data")
+        DESTINATION .)
 
 # system conditional sources
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
@@ -318,4 +336,48 @@ if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(udpmgr
             PRIVATE
             wsock32)
+endif ()
+
+
+if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    target_include_directories(fly8
+            PRIVATE
+			/opt/local/include
+			${CMAKE_CURRENT_SOURCE_DIR}/UNIX)
+    target_sources(fly8
+            PRIVATE
+            SDL/console.c
+            SDL/timer.c
+            SDL/grsdl.c
+            SDL/sdlplatform.c
+            SDL/sdlstick.c
+            COMMON/bgr.c
+            COMMON/bgr.h
+            COMMON/bgrasm.c
+            COMMON/vgr.c
+            COMMON/vgr.h
+            COMMON/grstat.c
+            COMMON/misc.c
+            COMMON/mouse.c
+            COMMON/mouse.h
+            COMMON/plsound.c
+            COMMON/plsound.h
+            COMMON/stick.c
+            COMMON/stick.h
+            COMMON/udp.c
+            UNIX/drivers.c
+            UNIX/plmidi.c
+            UNIX/gri.c
+            UNIX/grx.c
+            UNIX/xkeys.c
+            )
+		find_library(X11_LIBRARY X11 HINTS /opt/local/lib)
+		find_library(XEXT_LIBRARY Xext HINTS /opt/local/lib)
+		target_link_libraries(fly8 
+			PRIVATE
+			#	CONAN_PKG::sdl2
+			#   CONAN_PKG::lua
+			${X11_LIBRARY}
+			${XEXT_LIBRARY}
+		)
 endif ()

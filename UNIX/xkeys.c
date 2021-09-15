@@ -103,6 +103,7 @@ xGetKey (XKeyEvent *xkey)
 	return (c);
 }
 
+/*
 extern int
 GetMouse (int *win_x, int *win_y, char *btn, int *nbtn)
 {
@@ -112,3 +113,4 @@ GetMouse (int *win_x, int *win_y, char *btn, int *nbtn)
 	else
 		return (-1);
 }
+*/

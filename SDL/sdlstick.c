@@ -9,7 +9,7 @@
 
 #include <SDL.h>
 
-#include "core/fly.h"
+#include "fly.h"
 #include "stick.h"
 
 #define SDLS_MAX_AXES 6

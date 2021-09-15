@@ -19,6 +19,7 @@
 
 extern struct GrDriver GrX;
 extern struct GrDriver GrI;
+extern struct GrDriver GrSDL;
 #if HAVE_SVGALIB
 extern struct GrDriver GrSVGA;
 #endif
@@ -26,6 +27,7 @@ extern struct GrDriver GrSVGA;
 struct GrDriver *GrDrivers[] = {
 	&GrX,		/* default */
 	&GrI,
+    &GrSDL,
 #if HAVE_SVGALIB
 	&GrSVGA,
 #endif
@@ -49,6 +51,7 @@ extern struct PtrDriver PtrMouse;
 extern struct PtrDriver PtrAstick;
 extern struct PtrDriver PtrBstick;
 #endif
+extern struct PtrDriver PtrSdlStick;
 extern struct PtrDriver PtrRandom;
 
 struct PtrDriver *PtrDrivers[] = {
@@ -58,6 +61,7 @@ struct PtrDriver *PtrDrivers[] = {
 	&PtrAstick,
 	&PtrBstick,
 #endif
+	&PtrSdlStick,
 	&PtrRandom,
 0};
 

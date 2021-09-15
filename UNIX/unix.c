@@ -7,6 +7,8 @@
 /* general system-specific stuff for UNIX.
 */
 
+#include <SDL.h>
+
 #include "fly.h"
 #include "grx.h"
 
@@ -39,6 +41,13 @@ UnixBuildFileName (char *FullName, char *path, char *name, char *ext)
 		strcat (FullName, ".");
 		strcat (FullName, ext);
 	}
+}
+
+static int FAR
+UnixInit (char * options)
+{
+	SDL_Init(SDL_INIT_VIDEO);
+	return (0);
 }
 
 struct SysDriver SysDriver = {
