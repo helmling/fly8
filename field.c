@@ -44,7 +44,7 @@ field_long (FILE *ifile, char *line, long *value)
 extern int FAR
 field_read (FILE *ifile, struct FldTab FAR *fld, char * line)
 {
-	long	t;
+	int32_t	t;
 	char	s[80];
 
 	if (field_find (ifile, line))
@@ -60,14 +60,15 @@ field_read (FILE *ifile, struct FldTab FAR *fld, char * line)
 		return (0);
 	}
 
-	if (1 != sscanf (line, "%ld", &t)) {
+	if (1 != sscanf (line, "%d", &t)) {
 		LogPrintf ("%s %ld: bad field data\n",
 			st.filename, st.lineno);
 		return (-1);
 	}
 
 	if (READ_I+4 == fld->type)
-		*(long *)(fld->p) = t;
+		// *(long *)(fld->p) = t;
+		*(int32_t *)(fld->p) = t;
 	else if (READ_I+2 == fld->type)
 		*(short *)(fld->p) = (short)t;
 	else if (READ_I+1 == fld->type)

@@ -205,8 +205,10 @@ parms_get (char *pname)
 
 	st.lineno = 0;
 	for (i = 0; ParmTbl[i].type > 0; ++i) {
-		if (field_read (pfile, &ParmTbl[i], line) < 0)
+		if (field_read (pfile, &ParmTbl[i], line) < 0) {
+			LogPrintf ("Bad file read in %s at line %d\n", st.filename, i);
 			goto badret;
+		}
 	}
 	fclose (pfile);
 

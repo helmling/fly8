@@ -50,7 +50,7 @@ typedef unsigned SHORT_TYPE	Uxshort;
 
 typedef ANGLE_TYPE		ANGLE;
 typedef xshort			VECT[3];
-typedef long			LVECT[3];
+typedef int32_t			LVECT[3];
 typedef ANGLE			AVECT[3];
 typedef xshort			MAT[3][3];
 
@@ -97,7 +97,7 @@ struct shape {
 	VERTEX	*v;
 	Uxshort	extent;
 	Ushort	flags;
-	long	weight;		/* grams */
+	int32_t	weight;		/* grams */
 	xshort	drag;		/* drag factor */
 	Ushort	color;
 };
@@ -106,15 +106,15 @@ struct shape {
 #define TITLE(p)	(st.bodies[p->name]->title)
 
 struct pid {
-	long	Kp;
-	long	Iband;
-	long	Ki;
-	long	Dband;
-	long	Kd;
-	long	factor;
-	long	range;
-	long	Pprev;
-	long	I;
+	int32_t	Kp;
+	int32_t	Iband;
+	int32_t	Ki;
+	int32_t	Dband;
+	int32_t	Kd;
+	int32_t	factor;
+	int32_t	range;
+	int32_t	Pprev;
+	int32_t	I;
 };
 
 struct macro {
