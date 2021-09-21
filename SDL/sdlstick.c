@@ -14,6 +14,7 @@
 
 #define SDLS_MAX_AXES 6
 #define SDLS_MAX_BUTTONS 32
+#define SDLS_MAX_HATS 1 
 
 struct SdlStickState {
     SDL_Joystick *stickHandle;
@@ -23,6 +24,7 @@ struct SdlStickState {
     int hatCount;
     int axisValues[SDLS_MAX_AXES];
     int buttonValues[SDLS_MAX_BUTTONS];
+	int hatValue[SDLS_MAX_HATS];
 
 };
 
@@ -142,6 +144,13 @@ SDLStickHandleEvent(SDL_Event *jsEvent) {
             }
             thisJs->buttonValues[jsEvent->jbutton.button] = jsEvent->jbutton.state;
             break;
+		case SDL_JOYHATMOTION:
+            thisJs = SDLStickFindState(jsEvent->jhat.which);
+            if (NULL == thisJs || jsEvent->jhat.hat >= SDLS_MAX_HATS) {
+                break;
+            }
+			thisJs->hatValue[jsEvent->jhat.hat] = jsEvent->jhat.value;
+			break;
         default:
             break;
     }
@@ -169,6 +178,11 @@ SDLStickRead(POINTER *p) {
 			else
 				p->a[sctr] = ((int)thisStick->axisValues[sctr]) * 100 / SDL_JOYSTICK_AXIS_MAX;
         }
+		/*
+        for (sctr = 0; sctr < thisStick->hatCount; sctr++) {
+			p->a[10]= 25 * thisStick->hatValue[sctr];
+		}
+		*/
 		memset (btn, 0, sizeof (btn));
         for (sctr = 0; sctr < thisStick->buttonCount; sctr++) {
             if ((sctr) >= NBTNS) {
@@ -176,7 +190,14 @@ SDLStickRead(POINTER *p) {
             }
 		 	btn[sctr] = (char)(thisStick->buttonValues[sctr] == SDL_PRESSED);
         }
-		do_btns (p, btn, thisStick->buttonCount);
+        for (sctr = 0; sctr < thisStick->hatCount; sctr++) {
+			btn[18] = (char)(thisStick->hatValue[sctr] == SDL_HAT_UP);    // i
+			btn[19] = (char)(thisStick->hatValue[sctr] == SDL_HAT_RIGHT); // j
+			btn[20] = (char)(thisStick->hatValue[sctr] == SDL_HAT_DOWN);  // k
+			btn[21] = (char)(thisStick->hatValue[sctr] == SDL_HAT_LEFT);  // l
+		}
+		// do_btns (p, btn, thisStick->buttonCount);
+		do_btns (p, btn, 22);
     }
     return 0;
 }
