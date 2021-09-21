@@ -18,10 +18,9 @@
 struct SdlStickState {
     SDL_Joystick *stickHandle;
     SDL_JoystickID stickId;
-    int axisOffset;
-    int buttonOffset;
     int axisCount;
     int buttonCount;
+    int hatCount;
     int axisValues[SDLS_MAX_AXES];
     int buttonValues[SDLS_MAX_BUTTONS];
 
@@ -49,8 +48,6 @@ SDLStickFindState(SDL_JoystickID stickId) {
 static int FAR
 SDLStickInit(POINTER *p, char *options) {
     int ctr;
-    int axisOffset = 0;
-    int buttonOffset = 0;
 
     sdlJsCount = SDL_NumJoysticks();
 
@@ -96,12 +93,13 @@ SDLStickInit(POINTER *p, char *options) {
             continue;
         }
         thisStick->stickId = SDL_JoystickInstanceID(thisStick->stickHandle);
-        thisStick->axisOffset = axisOffset;
         thisStick->axisCount = SDL_JoystickNumAxes(thisStick->stickHandle);
-        axisOffset += thisStick->axisCount;
-        thisStick->buttonOffset = buttonOffset;
         thisStick->buttonCount = SDL_JoystickNumButtons(thisStick->stickHandle);
-        buttonOffset += thisStick->buttonCount;
+		thisStick->hatCount = SDL_JoystickNumHats(thisStick->stickHandle);
+
+		LogPrintf("  - Has %d axis\n", thisStick->axisCount);
+		LogPrintf("  - Has %d buttons\n", thisStick->buttonCount);
+		LogPrintf("  - Has %d hats\n", thisStick->hatCount);
     }
     return 0;
 }
@@ -152,9 +150,8 @@ SDLStickHandleEvent(SDL_Event *jsEvent) {
 static int FAR
 SDLStickRead(POINTER *p) {
     int ctr;
-    int axisCount = 0;
-    int buttonCount = 0;
     int sctr;
+	char	btn[NBTNS];
 
     for (ctr = 0; ctr < sdlJsCount; ctr++) {
         struct SdlStickState *const thisStick = &sdlStickAllSticks[ctr];
@@ -162,17 +159,24 @@ SDLStickRead(POINTER *p) {
             continue;
         }
         for (sctr = 0; sctr < thisStick->axisCount; sctr++) {
-            if ((sctr + thisStick->axisOffset) >= NANALOG) {
+            if (sctr  >= NANALOG) {
                 break;
             }
-            p->a[sctr + thisStick->axisOffset] = ((int)thisStick->axisValues[sctr]) * 100 / SDL_JOYSTICK_AXIS_MAX;
+			if (sctr == 0) // invert role
+				p->a[sctr] = -((int)thisStick->axisValues[sctr]) * 100 / SDL_JOYSTICK_AXIS_MAX;
+			else if (sctr == 3) // postive throttle
+				p->a[sctr] = 50 + ((int)thisStick->axisValues[sctr]) * 50 / SDL_JOYSTICK_AXIS_MAX;
+			else
+				p->a[sctr] = ((int)thisStick->axisValues[sctr]) * 100 / SDL_JOYSTICK_AXIS_MAX;
         }
+		memset (btn, 0, sizeof (btn));
         for (sctr = 0; sctr < thisStick->buttonCount; sctr++) {
-            if ((sctr + thisStick->buttonOffset) >= NBTNS) {
+            if ((sctr) >= NBTNS) {
                 break;
             }
-            p->btn[sctr + thisStick->buttonOffset] = (thisStick->buttonValues[sctr] == SDL_PRESSED);
+		 	btn[sctr] = (char)(thisStick->buttonValues[sctr] == SDL_PRESSED);
         }
+		do_btns (p, btn, thisStick->buttonCount);
     }
     return 0;
 }
