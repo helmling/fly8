@@ -177,10 +177,23 @@ SDLStickRead(POINTER *p) {
     return 0;
 }
 
+static int FAR
+SDLStickCal(POINTER *p) {
+    return(0);
+}
+
+static int FAR
+SDLStickCenter(POINTER *p) {
+    return(0);
+}
+
+
 struct PtrDriver NEAR PtrSdlStick = {
         .name = "SDLStick",
         .Init = SDLStickInit,
         .Term = SDLStickTerm,
+        .Center = SDLStickCenter,
+        .Cal = SDLStickCal,
         .Read = SDLStickRead,
         .Key = std_key,
 };
