@@ -4,7 +4,8 @@ project(fly8 LANGUAGES C CXX)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
-set(CMAKE_INSTALL_PREFIX "/Users/helmling/fly8-sdl/")
+set(CMAKE_INSTALL_PREFIX "/Users/matt/fly8-sdl")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(CheckFunctionExists)
 check_function_exists(stricmp HAS_STRICMP)
@@ -367,6 +368,7 @@ if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
             COMMON/udp.c
             UNIX/drivers.c
             UNIX/plmidi.c
+			UNIX/macmidi.c
             UNIX/gri.c
             UNIX/grx.c
             UNIX/xkeys.c
