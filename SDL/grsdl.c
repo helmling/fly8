@@ -53,7 +53,7 @@ GrSDLInit(DEVICE *dev, char *options) {
                                      SDL_WINDOWPOS_UNDEFINED,
                                      dev->sizex,
                                      dev->sizey,
-                                     SDL_WINDOW_FULLSCREEN);
+                                     SDL_WINDOW_FULLSCREEN | SDL_WINDOW_ALLOW_HIGHDPI);
     if (sdlMainWindow == NULL) {
         LogPrintf("SDL Failed to Create Window: %s\n", SDL_GetError());
         goto badret;

@@ -37,11 +37,13 @@ struct GrDriver *GrDrivers[] = {
 #if HAVE_MIDI
 extern struct SndDriver SndPlMidi;
 #endif
+extern struct SndDriver MacPlMidi;
 
 struct SndDriver *SndDrivers[] = {
 #if HAVE_MIDI
 	&SndPlMidi,
 #endif
+	&MacPlMidi,
 0};
 
 
