@@ -167,6 +167,9 @@ MidiInit (char *options) {
 	LogPrintf ("%s: init ok\n", Snd->name);
 
 	MusicDeviceMIDIEvent(musicDevice, 0xc0+midi_channel, midi_program, 0, 0); // change program
+
+	UInt32 usesReverb = 0;
+	AudioUnitSetProperty(musicDevice, kMusicDeviceProperty_UsesInternalReverb, kAudioUnitScope_Global, 0, &usesReverb, sizeof (usesReverb));
 	return (0);
 
 badret:
